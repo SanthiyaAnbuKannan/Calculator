@@ -96,11 +96,11 @@
     <distributionManagement>
     <snapshotRepository>
         <id>artifactory</id>
-        <url>http://localhost:8081/artifactory/Calc_Dev_Snapshot </url>
+        <url>http://localhost:8082/artifactory/Calc_Dev_Snapshot </url>
     </snapshotRepository>
     <repository>
         <id>artifactory</id>
-        <url>http://localhost:8081/artifactory/Calc_Dev_Snapshot</url>
+        <url>http://localhost:8082/artifactory/Calc_Dev_Snapshot</url>
     </repository>
 </distributionManagement>
 
