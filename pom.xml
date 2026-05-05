@@ -10,27 +10,13 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>Calculator</name>
+    <name>Calc_Dev_Snapshot</name>
+    <url>http://calculator</url>
 
-    <!-- ✅ JDK 17 Configuration -->
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
-    <!-- ✅ Dependencies -->
+    <!-- ================= DEPENDENCIES ================= -->
     <dependencies>
 
-        <!-- Servlet API (javax for Tomcat 9) -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.1</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- JUnit (modern version) -->
+        <!-- JUnit -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -38,27 +24,28 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Selenium (optional) -->
+        <!-- Servlet API -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Selenium -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>4.20.0</version>
+            <version>4.21.0</version>
         </dependency>
 
     </dependencies>
 
-    <!-- ✅ Build -->
+    <!-- ================= BUILD ================= -->
     <build>
         <finalName>calculator</finalName>
 
         <plugins>
-
-            <!-- Compiler Plugin for JDK 17 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
-            </plugin>
 
             <!-- WAR Plugin -->
             <plugin>
@@ -67,49 +54,118 @@
                 <version>3.4.0</version>
             </plugin>
 
-            <!-- Surefire (Testing) -->
+            <!-- Surefire Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
             </plugin>
 
-            <!-- JaCoCo (Coverage) -->
+            <!-- JaCoCo Plugin -->
             <plugin>
-    <groupId>org.jacoco</groupId>
-    <artifactId>jacoco-maven-plugin</artifactId>
-    <version>0.8.11</version>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.11</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-    <executions>
-
-        <!-- Attach agent -->
-        <execution>
-            <id>prepare-agent</id>
-            <goals>
-                <goal>prepare-agent</goal>
-            </goals>
-        </execution>
-
-        <!-- Generate report -->
-        <execution>
-            <id>report</id>
-            <phase>test</phase>
-            <goals>
-                <goal>report</goal>
-            </goals>
-        </execution>
-
-    </executions>
-</plugin>
-
-            <!-- SonarQube -->
+            <!-- Sonar Plugin -->
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
-                <version>3.10.0.2594</version>
+                <version>3.11.0.3922</version>
             </plugin>
 
         </plugins>
     </build>
+
+    <!-- ================= ARTIFACTORY DEPLOY ================= -->
+    <distributionManagement>
+    <snapshotRepository>
+        <id>artifactory</id>
+        <url>http://localhost:8081/artifactory/Calc_Dev_Snapshot </url>
+    </snapshotRepository>
+    <repository>
+        <id>artifactory</id>
+        <url>http://localhost:8081/artifactory/Calc_Dev_Snapshot</url>
+    </repository>
+</distributionManagement>
+
+    <!-- ================= PROFILES ================= -->
+    <profiles>
+
+        <!-- Unit Test -->
+        <profile>
+            <id>ut</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/*UT.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Integration Test -->
+        <profile>
+            <id>it</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/*IT.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Performance Test -->
+        <profile>
+            <id>pt</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.lazerycode.jmeter</groupId>
+                        <artifactId>jmeter-maven-plugin</artifactId>
+                        <version>3.5.0</version>
+                        <executions>
+                            <execution>
+                                <id>jmeter-tests</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>jmeter</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
 
 </project>
